@@ -1,0 +1,110 @@
+---
+interface Props {
+	title: string;
+	description?: string;
+}
+
+const { title, description = 'Catálogo de papercraft de anime hechos a mano.' } = Astro.props;
+---
+
+<!doctype html>
+<html lang="es">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="description" content={description} />
+		<meta name="theme-color" content="#a98bf0" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			rel="stylesheet"
+			href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&display=swap"
+		/>
+		<meta name="generator" content={Astro.generator} />
+		<title>{title}</title>
+	</head>
+	<body>
+		<slot />
+	</body>
+</html>
+
+<style is:global>
+	:root {
+		--lilac-50: #f8f3ff;
+		--lilac-100: #f0e6ff;
+		--lilac-200: #e2d1fb;
+		--lilac-300: #cdb4f5;
+		--lilac-400: #b398ec;
+		--lilac-500: #9a7ce0;
+		--lilac-600: #7d5fcb;
+		--lilac-700: #5f47a8;
+		--night: #574aa3;
+		--pink-200: #fbd3ec;
+		--pink-300: #f6b3dd;
+		--pink-400: #ee8fcb;
+		--cream: #fff4e8;
+		--star: #f6c544;
+		--ink: #3d2f6b;
+		--ink-soft: #7a6ca6;
+		--radius-lg: 22px;
+		--radius-md: 16px;
+		--shadow-soft: 0 10px 30px -12px rgba(95, 71, 168, 0.45);
+		--font-display: 'Fredoka', 'Nunito', system-ui, sans-serif;
+		--font-body: 'Nunito', system-ui, sans-serif;
+	}
+
+	*,
+	*::before,
+	*::after {
+		box-sizing: border-box;
+	}
+
+	html {
+		scroll-behavior: smooth;
+	}
+
+	body {
+		margin: 0;
+		min-height: 100vh;
+		font-family: var(--font-body);
+		color: var(--ink);
+		background-color: var(--lilac-50);
+		/* cuadrícula suave como en las referencias */
+		background-image:
+			linear-gradient(rgba(154, 124, 224, 0.08) 1px, transparent 1px),
+			linear-gradient(90deg, rgba(154, 124, 224, 0.08) 1px, transparent 1px),
+			linear-gradient(180deg, #f8f3ff 0%, #fdf2fb 50%, #f3ecff 100%);
+		background-size:
+			36px 36px,
+			36px 36px,
+			100% 100%;
+		background-attachment: fixed;
+		-webkit-font-smoothing: antialiased;
+	}
+
+	img {
+		display: block;
+		max-width: 100%;
+	}
+
+	button,
+	input {
+		font: inherit;
+		color: inherit;
+	}
+
+	::selection {
+		background: var(--pink-300);
+		color: var(--ink);
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		*,
+		*::before,
+		*::after {
+			animation: none !important;
+			transition: none !important;
+		}
+	}
+</style>

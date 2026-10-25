@@ -1,0 +1,23 @@
+---
+// Destello de 4 puntas cóncavo, como el de las imágenes de referencia.
+interface Props {
+	size?: number;
+	color?: string;
+	class?: string;
+	style?: string;
+}
+
+const { size = 24, color = 'var(--cream)', class: className, style } = Astro.props;
+---
+
+<svg
+	class:list={['sparkle', className]}
+	style={style}
+	width={size}
+	height={size}
+	viewBox="0 0 24 24"
+	aria-hidden="true"
+	fill={color}
+>
+	<path d="M12 0C12.6 6.6 17.4 11.4 24 12C17.4 12.6 12.6 17.4 12 24C11.4 17.4 6.6 12.6 0 12C6.6 11.4 11.4 6.6 12 0Z"></path>
+</svg>

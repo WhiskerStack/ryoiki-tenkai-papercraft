@@ -1,0 +1,20 @@
+{
+  "name": "catalogo-papercraft",
+  "type": "module",
+  "version": "0.0.1",
+  "engines": {
+    "node": ">=22.23.4"
+  },
+  "scripts": {
+    "catalog": "node scripts/generate-catalog.mjs",
+    "predev": "npm run catalog",
+    "dev": "astro dev",
+    "prebuild": "npm run catalog",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "astro": "^7.4.2"
+  }
+}
