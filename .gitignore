@@ -25,3 +25,6 @@ pnpm-debug.log*
 
 # catálogo generado por scripts/generate-catalog.mjs
 src/data/catalog.json
+
+# mkctx - generated context
+mkctx/
