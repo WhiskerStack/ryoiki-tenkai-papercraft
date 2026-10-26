@@ -1,46 +1,20 @@
-# Astro Starter Kit: Basics
+# Catálogo de Papercraft
 
-```sh
-npm create astro@latest -- --template basics
-```
+Web estática (Astro) que muestra el catálogo de papercraft de anime con estilo de canal de YouTube.
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+## Cómo añadir papercrafts
 
-## 🚀 Project Structure
+1. Copia la imagen en `public/catalog/`. El nombre **debe empezar por un número**, que define el orden (ej. `177 algo.jpg`).
+2. Ejecuta `npm run build`. El script `scripts/generate-catalog.mjs` se ejecuta solo y regenera `src/data/catalog.json`.
 
-Inside of your Astro project, you'll see the following folders and files:
+## Comandos
 
-```text
-/
-├── public/
-│   └── favicon.svg
-├── src
-│   ├── assets
-│   │   └── astro.svg
-│   ├── components
-│   │   └── Welcome.astro
-│   ├── layouts
-│   │   └── Layout.astro
-│   └── pages
-│       └── index.astro
-└── package.json
-```
+| Comando           | Acción                                         |
+| :---------------- | :--------------------------------------------- |
+| `npm install`     | Instala dependencias                           |
+| `npm run dev`     | Servidor local en `localhost:4321`             |
+| `npm run build`   | Genera el catálogo y construye la web en `dist/` |
+| `npm run preview` | Previsualiza el build                          |
+| `npm run catalog` | Solo regenera `src/data/catalog.json`          |
 
-To learn more about the folder structure of an Astro project, refer to [our guide on project structure](https://docs.astro.build/en/basics/project-structure/).
-
-## 🧞 Commands
-
-All commands are run from the root of the project, from a terminal:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+El nombre del canal, el @usuario y la frase se cambian en `src/config.ts`.

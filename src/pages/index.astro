@@ -1,11 +1,713 @@
 ---
-import Welcome from '../components/Welcome.astro';
+import { Image } from 'astro:assets';
 import Layout from '../layouts/Layout.astro';
+import bannerImg from '../assets/banner.png';
+import Sparkle from '../components/Sparkle.astro';
+import PixelCloud from '../components/PixelCloud.astro';
+import PapercraftCard from '../components/PapercraftCard.astro';
+import catalog from '../data/catalog.json';
+import { CHANNEL } from '../config';
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+const total = catalog.length;
 ---
 
-<Layout>
-	<Welcome />
+<Layout title={`${CHANNEL.name} · Catálogo`}>
+	<!-- Barra superior estilo YouTube -->
+	<header class="topbar">
+		<a class="brand" href="#top" aria-label={CHANNEL.name}>
+			<img class="brand-icon" src={CHANNEL.logo} alt="" />
+			<span class="brand-name">{CHANNEL.name}</span>
+		</a>
+
+		<label class="search">
+			<span class="visually-hidden">Buscar por número</span>
+			<input id="search" type="search" inputmode="numeric" placeholder="Buscar por número… ej. 42" autocomplete="off" />
+			<span class="search-btn" aria-hidden="true">
+				<svg viewBox="0 0 24 24" width="18" height="18"><circle cx="11" cy="11" r="6.5" fill="none" stroke="currentColor" stroke-width="2.2"></circle><path d="m16 16 4.5 4.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"></path></svg>
+			</span>
+		</label>
+
+		<span class="top-avatar" aria-hidden="true">{CHANNEL.avatarEmoji}</span>
+	</header>
+
+	<!-- Fondo de la página: degradado + cuadrícula + destellos + nubes -->
+	<div class="sky" aria-hidden="true">
+		<div class="sky-grid"></div>
+		<Sparkle size={46} class="tw" style="left:4%;top:14%" />
+		<Sparkle size={18} class="tw" style="left:22%;top:48%;animation-delay:.6s" />
+		<Sparkle size={30} class="tw" style="left:46%;top:8%;animation-delay:1.2s" />
+		<Sparkle size={16} class="tw" style="left:63%;top:62%;animation-delay:.3s" />
+		<Sparkle size={40} class="tw" style="left:85%;top:18%;animation-delay:.9s" />
+		<Sparkle size={22} class="tw" style="left:93%;top:72%;animation-delay:1.5s" />
+		<Sparkle size={34} class="tw" style="left:8%;top:84%;animation-delay:2s" />
+		<Sparkle size={20} class="tw" style="left:52%;top:90%;animation-delay:.4s" />
+		<PixelCloud width={200} class="cloud c1" />
+		<PixelCloud width={140} class="cloud c2" />
+		<PixelCloud width={240} class="cloud c3" />
+		<PixelCloud width={170} class="cloud c4" />
+	</div>
+
+	<main id="top">
+		<!-- Banner del canal -->
+		<section class="banner">
+			<Image
+				src={bannerImg}
+				alt={`Papercrafts de ${CHANNEL.name}: Zoro, Luffy y Sanji de One Piece; Reo, Bachira y Nagi de Blue Lock`}
+				widths={[640, 1024, 1440, 2048]}
+				sizes="(max-width: 1440px) 100vw, 1440px"
+				loading="eager"
+				fetchpriority="high"
+			/>
+			<Sparkle size={40} color="var(--cream)" class="tw bs1" />
+			<Sparkle size={22} color="var(--cream)" class="tw bs2" />
+			<Sparkle size={34} color="var(--cream)" class="tw bs3" />
+		</section>
+
+		<div class="panel">
+		<!-- Cabecera del canal -->
+		<section class="channel">
+			<div class="channel-avatar" aria-hidden="true">
+				<img src={CHANNEL.logo} alt="" />
+				<Sparkle size={22} color="var(--star)" class="avatar-star" />
+			</div>
+			<div class="channel-info">
+				<h1>{CHANNEL.name}</h1>
+				<p class="channel-meta">
+					<strong>{CHANNEL.handle}</strong> · <span>{total} papercrafts</span>
+				</p>
+				<p class="channel-tagline">{CHANNEL.tagline}</p>
+			</div>
+		</section>
+
+		<!-- Pestañas -->
+		<nav class="tabs" aria-label="Secciones">
+			<a class="tab active" href="#catalogo" aria-current="page">Papercrafts</a>
+		</nav>
+
+		<!-- Listado -->
+		<section id="catalogo" class="catalog">
+			<div class="chips" role="group" aria-label="Ordenar">
+				<button class="chip active" type="button" data-sort="asc">✦ Del primero al último</button>
+				<button class="chip" type="button" data-sort="desc">✦ Del último al primero</button>
+				<span id="count" class="count" aria-live="polite">{total} resultados</span>
+			</div>
+
+			<ul id="grid" class="grid">
+				{catalog.map((item, i) => <PapercraftCard number={item.number} src={item.src} index={i} />)}
+			</ul>
+
+			<div id="empty" class="empty" hidden>
+				<PixelCloud width={140} />
+				<p>No encontramos ese número… (｡•́︿•̀｡)</p>
+			</div>
+		</section>
+		</div>
+	</main>
+
+	<footer class="footer">
+		<Sparkle size={14} />
+		<span>Hecho a mano con 💜 por {CHANNEL.name}</span>
+		<Sparkle size={14} />
+	</footer>
+
+	<!-- Visor ampliado (estilo marco oscuro con destellos) -->
+	<dialog id="viewer" class="viewer" aria-label="Vista ampliada">
+		<div class="viewer-frame">
+			<Sparkle size={26} color="var(--lilac-300)" class="vs vs1" />
+			<Sparkle size={14} color="var(--cream)" class="vs vs2" />
+			<Sparkle size={26} color="var(--lilac-300)" class="vs vs3" />
+			<Sparkle size={14} color="var(--cream)" class="vs vs4" />
+			<button class="viewer-close" type="button" aria-label="Cerrar">×</button>
+			<img id="viewer-img" src="" alt="" />
+			<div class="viewer-bar">
+				<button class="viewer-nav" type="button" data-step="-1" aria-label="Anterior">‹</button>
+				<p id="viewer-title" class="viewer-title"></p>
+				<button class="viewer-nav" type="button" data-step="1" aria-label="Siguiente">›</button>
+			</div>
+		</div>
+	</dialog>
 </Layout>
+
+<script>
+	const grid = document.getElementById('grid') as HTMLUListElement;
+	const cards = Array.from(grid.querySelectorAll<HTMLLIElement>('.card'));
+	const search = document.getElementById('search') as HTMLInputElement;
+	const count = document.getElementById('count') as HTMLSpanElement;
+	const empty = document.getElementById('empty') as HTMLDivElement;
+
+	// --- Búsqueda por número ---
+	function applyFilter() {
+		const q = search.value.replace(/\D/g, '');
+		let visible = 0;
+		for (const card of cards) {
+			const match = !q || card.dataset.number!.startsWith(q);
+			card.hidden = !match;
+			if (match) visible++;
+		}
+		count.textContent = `${visible} resultado${visible === 1 ? '' : 's'}`;
+		empty.hidden = visible > 0;
+	}
+	search.addEventListener('input', applyFilter);
+
+	// --- Ordenar ---
+	const chips = document.querySelectorAll<HTMLButtonElement>('.chip');
+	chips.forEach((chip) =>
+		chip.addEventListener('click', () => {
+			chips.forEach((c) => c.classList.toggle('active', c === chip));
+			const dir = chip.dataset.sort === 'desc' ? -1 : 1;
+			cards
+				.slice()
+				.sort((a, b) => dir * (Number(a.dataset.number) - Number(b.dataset.number)))
+				.forEach((card) => grid.appendChild(card));
+		}),
+	);
+
+	// --- Visor ---
+	const viewer = document.getElementById('viewer') as HTMLDialogElement;
+	const viewerImg = document.getElementById('viewer-img') as HTMLImageElement;
+	const viewerTitle = document.getElementById('viewer-title') as HTMLParagraphElement;
+	let current: HTMLLIElement[] = [];
+	let pos = 0;
+
+	function show(i: number) {
+		pos = (i + current.length) % current.length;
+		const img = current[pos].querySelector('img')!;
+		viewerImg.src = img.src;
+		viewerImg.alt = img.alt;
+		viewerTitle.textContent = img.alt;
+	}
+
+	grid.addEventListener('click', (e) => {
+		const hit = (e.target as HTMLElement).closest('.card');
+		if (!hit) return;
+		current = Array.from(grid.querySelectorAll<HTMLLIElement>('.card:not([hidden])'));
+		show(current.indexOf(hit as HTMLLIElement));
+		viewer.showModal();
+	});
+
+	viewer.querySelectorAll<HTMLButtonElement>('.viewer-nav').forEach((btn) =>
+		btn.addEventListener('click', () => show(pos + Number(btn.dataset.step))),
+	);
+	viewer.querySelector('.viewer-close')!.addEventListener('click', () => viewer.close());
+	viewer.addEventListener('click', (e) => {
+		if (e.target === viewer) viewer.close();
+	});
+	viewer.addEventListener('keydown', (e) => {
+		if (e.key === 'ArrowRight') show(pos + 1);
+		if (e.key === 'ArrowLeft') show(pos - 1);
+	});
+</script>
+
+<style>
+	.visually-hidden {
+		position: absolute;
+		width: 1px;
+		height: 1px;
+		overflow: hidden;
+		clip-path: inset(50%);
+	}
+
+	/* ---------- Barra superior ---------- */
+	.topbar {
+		position: sticky;
+		top: 0;
+		z-index: 20;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 16px;
+		padding: 10px clamp(14px, 3vw, 28px);
+		background: rgba(248, 243, 255, 0.82);
+		backdrop-filter: blur(12px);
+		border-bottom: 2px solid var(--lilac-200);
+	}
+
+	.brand {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		text-decoration: none;
+		color: var(--ink);
+		flex-shrink: 0;
+	}
+
+	.brand-icon {
+		width: 34px;
+		height: 34px;
+		object-fit: contain;
+	}
+
+	.brand-name {
+		font-family: var(--font-display);
+		font-weight: 700;
+		font-size: 1.15rem;
+		letter-spacing: -0.01em;
+	}
+
+	.search {
+		display: flex;
+		flex: 0 1 520px;
+		min-width: 0;
+	}
+
+	.search input {
+		flex: 1;
+		min-width: 0;
+		padding: 9px 18px;
+		border: 2px solid var(--lilac-300);
+		border-right: 0;
+		border-radius: 999px 0 0 999px;
+		background: #fff;
+		outline: none;
+		transition: border-color 0.2s;
+	}
+
+	.search input:focus {
+		border-color: var(--pink-400);
+	}
+
+	.search input:focus + .search-btn {
+		border-color: var(--pink-400);
+	}
+
+	.search-btn {
+		display: grid;
+		place-items: center;
+		width: 56px;
+		border: 2px solid var(--lilac-300);
+		border-radius: 0 999px 999px 0;
+		background: var(--lilac-100);
+		color: var(--lilac-600);
+		transition: border-color 0.2s;
+	}
+
+	.top-avatar {
+		display: grid;
+		place-items: center;
+		width: 36px;
+		height: 36px;
+		flex-shrink: 0;
+		border-radius: 50%;
+		background: linear-gradient(135deg, var(--pink-200), var(--lilac-300));
+	}
+
+	main {
+		max-width: 1440px;
+		margin: 0 auto;
+		padding: 16px clamp(14px, 3vw, 28px) 40px;
+	}
+
+	/* ---------- Fondo de la página ---------- */
+	.sky {
+		position: fixed;
+		inset: 0;
+		z-index: -1;
+		overflow: hidden;
+		pointer-events: none;
+		background:
+			radial-gradient(ellipse at 0% 100%, #f7a8d8 0%, transparent 50%),
+			radial-gradient(ellipse at 100% 0%, #f6c1ec 0%, transparent 45%),
+			radial-gradient(ellipse at 50% 50%, #9d96ee 0%, transparent 70%),
+			linear-gradient(180deg, #c8b4f4, #b48be0);
+	}
+
+	.sky-grid {
+		position: absolute;
+		inset: 0;
+		background-image:
+			linear-gradient(rgba(255, 244, 232, 0.6) 2px, transparent 2px),
+			linear-gradient(90deg, rgba(255, 244, 232, 0.6) 2px, transparent 2px);
+		background-size: 64px 64px;
+		background-position: -1px -1px;
+	}
+
+	.sky :global(.cloud) {
+		position: absolute;
+		opacity: 0.9;
+		animation: drift 14s ease-in-out infinite alternate;
+	}
+
+	.sky :global(.c1) {
+		left: -30px;
+		top: 30%;
+	}
+	.sky :global(.c2) {
+		left: 58%;
+		top: 4%;
+		animation-duration: 18s;
+	}
+	.sky :global(.c3) {
+		right: -40px;
+		bottom: 6%;
+		animation-duration: 16s;
+	}
+	.sky :global(.c4) {
+		left: 30%;
+		bottom: -10px;
+		animation-duration: 20s;
+	}
+
+	.sky :global(.tw),
+	.banner :global(.tw) {
+		position: absolute;
+		animation: twinkle 2.6s ease-in-out infinite;
+		filter: drop-shadow(0 0 6px rgba(255, 244, 232, 0.8));
+	}
+
+	/* ---------- Banner ---------- */
+	.banner {
+		position: relative;
+		border-radius: var(--radius-lg);
+		border: 3px solid var(--cream);
+		box-shadow:
+			0 0 0 3px var(--lilac-400),
+			var(--shadow-soft);
+	}
+
+	.banner img {
+		width: 100%;
+		height: auto;
+		aspect-ratio: 16 / 5;
+		object-fit: cover;
+		border-radius: calc(var(--radius-lg) - 3px);
+	}
+
+	.banner :global(.bs1) {
+		left: -16px;
+		top: -16px;
+	}
+	.banner :global(.bs2) {
+		right: 18px;
+		top: -10px;
+		animation-delay: 0.8s;
+	}
+	.banner :global(.bs3) {
+		right: -14px;
+		bottom: -14px;
+		animation-delay: 1.4s;
+	}
+
+	/* ---------- Panel de contenido (ventana translúcida) ---------- */
+	.panel {
+		margin-top: 22px;
+		padding: 4px clamp(14px, 2.5vw, 28px) 32px;
+		border-radius: var(--radius-lg);
+		background: rgba(250, 245, 255, 0.86);
+		border: 2px solid var(--lilac-300);
+		backdrop-filter: blur(10px);
+		box-shadow: var(--shadow-soft);
+	}
+
+	@media (max-width: 520px) {
+		.panel {
+			padding-inline: 12px;
+		}
+	}
+
+	/* ---------- Cabecera del canal ---------- */
+	.channel {
+		display: flex;
+		align-items: center;
+		gap: clamp(14px, 3vw, 26px);
+		padding: 22px 4px 12px;
+	}
+
+	.channel-avatar {
+		position: relative;
+		flex-shrink: 0;
+		display: grid;
+		place-items: center;
+		width: clamp(78px, 12vw, 140px);
+		aspect-ratio: 1;
+		font-size: clamp(2.4rem, 6vw, 4.4rem);
+		border-radius: 50%;
+		background: linear-gradient(135deg, var(--pink-200), var(--lilac-300));
+		border: 4px solid #fff;
+		box-shadow:
+			0 0 0 3px var(--lilac-300),
+			var(--shadow-soft);
+	}
+
+	.channel-avatar img {
+		width: 78%;
+		height: 78%;
+		object-fit: contain;
+	}
+
+	.channel-avatar :global(.avatar-star) {
+		position: absolute;
+		top: 2%;
+		right: 2%;
+		animation: twinkle 2s ease-in-out infinite;
+	}
+
+	.channel-info h1 {
+		margin: 0;
+		font-family: var(--font-display);
+		font-weight: 700;
+		font-size: clamp(1.6rem, 4vw, 2.5rem);
+		line-height: 1.1;
+		color: var(--ink);
+	}
+
+	.channel-meta {
+		margin: 6px 0 4px;
+		color: var(--ink-soft);
+		font-size: 0.95rem;
+	}
+
+	.channel-meta strong {
+		color: var(--lilac-600);
+	}
+
+	.channel-tagline {
+		margin: 0;
+		color: var(--ink-soft);
+	}
+
+	/* ---------- Pestañas ---------- */
+	.tabs {
+		display: flex;
+		gap: 8px;
+		border-bottom: 2px solid var(--lilac-200);
+		margin-bottom: 18px;
+	}
+
+	.tab {
+		padding: 10px 6px;
+		margin-bottom: -2px;
+		font-family: var(--font-display);
+		font-weight: 600;
+		color: var(--ink-soft);
+		text-decoration: none;
+		border-bottom: 3px solid transparent;
+	}
+
+	.tab.active {
+		color: var(--ink);
+		border-color: var(--pink-400);
+	}
+
+	/* ---------- Chips ---------- */
+	.chips {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 10px;
+		margin-bottom: 22px;
+	}
+
+	.chip {
+		padding: 7px 15px;
+		font-family: var(--font-display);
+		font-weight: 500;
+		font-size: 0.92rem;
+		border: 2px solid var(--lilac-300);
+		border-radius: 999px;
+		background: #fff;
+		cursor: pointer;
+		transition:
+			background 0.2s,
+			color 0.2s,
+			transform 0.15s;
+	}
+
+	.chip:hover {
+		background: var(--lilac-100);
+	}
+
+	.chip:active {
+		transform: scale(0.96);
+	}
+
+	.chip.active {
+		color: #fff;
+		border-color: var(--lilac-600);
+		background: linear-gradient(135deg, var(--lilac-500), var(--pink-400));
+	}
+
+	.count {
+		margin-left: auto;
+		font-size: 0.9rem;
+		color: var(--ink-soft);
+	}
+
+	/* ---------- Cuadrícula ---------- */
+	.grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr));
+		gap: 34px 22px;
+		margin: 0;
+		padding: 0;
+	}
+
+	@media (max-width: 520px) {
+		.grid {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+			gap: 24px 12px;
+		}
+		.brand-name {
+			display: none;
+		}
+		.count {
+			margin-left: 0;
+			width: 100%;
+		}
+	}
+
+	.empty {
+		display: grid;
+		justify-items: center;
+		gap: 10px;
+		padding: 60px 0;
+		font-family: var(--font-display);
+		color: var(--ink-soft);
+	}
+
+	.empty[hidden] {
+		display: none;
+	}
+
+	/* ---------- Pie ---------- */
+	.footer {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		gap: 10px;
+		padding: 28px 16px 36px;
+		font-family: var(--font-display);
+		color: #fff;
+		text-shadow: 0 1px 2px rgba(95, 71, 168, 0.6);
+	}
+
+	/* ---------- Visor ---------- */
+	.viewer {
+		padding: 0;
+		border: 0;
+		background: transparent;
+		width: min(100% - 48px, 560px);
+		max-width: none;
+		max-height: none;
+		/* el botón × y los destellos sobresalen del marco: sin barras de scroll */
+		overflow: visible;
+	}
+
+	/* bloquea el scroll de la página mientras el visor está abierto */
+	:global(html:has(dialog[open])) {
+		overflow: hidden;
+	}
+
+	.viewer::backdrop {
+		background: rgba(30, 22, 60, 0.72);
+		backdrop-filter: blur(6px);
+	}
+
+	.viewer[open] {
+		animation: pop-in 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+	}
+
+	.viewer-frame {
+		position: relative;
+		padding: 22px;
+		border-radius: 26px;
+		background: #121019;
+		box-shadow:
+			0 0 0 2px #c9b3f2,
+			0 0 0 8px #121019,
+			0 0 0 10px rgba(201, 179, 242, 0.5),
+			0 30px 60px -20px rgba(0, 0, 0, 0.7);
+	}
+
+	.viewer-frame :global(.vs) {
+		position: absolute;
+		z-index: 1;
+		pointer-events: none;
+	}
+	.viewer-frame :global(.vs1) { left: -6px; top: -6px; }
+	.viewer-frame :global(.vs2) { left: 26px; top: 8px; }
+	.viewer-frame :global(.vs3) { right: -6px; bottom: -6px; }
+	.viewer-frame :global(.vs4) { right: 26px; bottom: 8px; }
+
+	.viewer-frame img {
+		width: 100%;
+		/* deja sitio al marco y a la barra inferior para que todo quepa en pantalla */
+		max-height: calc(100dvh - 190px);
+		object-fit: contain;
+		border-radius: 18px;
+		background: #fff;
+	}
+
+	.viewer-close {
+		position: absolute;
+		top: -14px;
+		right: -14px;
+		z-index: 2;
+		width: 38px;
+		height: 38px;
+		font-size: 1.5rem;
+		line-height: 1;
+		color: var(--lilac-700);
+		background: #fde58a;
+		border: 2px solid var(--lilac-600);
+		border-radius: 12px;
+		cursor: pointer;
+	}
+
+	.viewer-bar {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 12px;
+		margin-top: 16px;
+	}
+
+	.viewer-title {
+		margin: 0;
+		font-family: var(--font-display);
+		font-weight: 600;
+		font-size: 1.2rem;
+		color: var(--lilac-200);
+	}
+
+	.viewer-nav {
+		width: 44px;
+		height: 44px;
+		font-size: 1.8rem;
+		line-height: 1;
+		color: #fff;
+		background: linear-gradient(135deg, var(--lilac-500), var(--pink-400));
+		border: 0;
+		border-radius: 50%;
+		cursor: pointer;
+		transition: transform 0.15s;
+	}
+
+	.viewer-nav:hover {
+		transform: scale(1.08);
+	}
+
+	@keyframes twinkle {
+		0%,
+		100% {
+			transform: scale(1) rotate(0deg);
+			opacity: 1;
+		}
+		50% {
+			transform: scale(0.7) rotate(20deg);
+			opacity: 0.6;
+		}
+	}
+
+	@keyframes drift {
+		to {
+			transform: translateX(30px);
+		}
+	}
+
+	@keyframes pop-in {
+		from {
+			opacity: 0;
+			transform: scale(0.94);
+		}
+	}
+</style>
