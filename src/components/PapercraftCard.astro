@@ -4,16 +4,20 @@ import { CHANNEL } from '../config';
 
 interface Props {
 	number: number;
+	name: string;
 	src: string;
 	index: number;
 }
 
-const { number, src, index } = Astro.props;
+const { number, name, src: path, index } = Astro.props;
+const src = `${import.meta.env.BASE_URL}${path}`;
 const code = String(number).padStart(3, '0');
+const title = name || `Papercraft Nº ${number}`;
+const label = name ? `${name} · Papercraft Nº ${number}` : title;
 ---
 
-<li class="card" data-number={number}>
-	<button class="card-hit" type="button" data-index={index} aria-label={`Ver Papercraft Nº ${number}`}>
+<li class="card" data-number={number} data-name={name}>
+	<button class="card-hit" type="button" data-index={index} aria-label={`Ver ${label}`}>
 		<div class="window">
 			<div class="window-bar" aria-hidden="true">
 				<span class="window-title">papercraft_{code}.jpg</span>
@@ -22,16 +26,15 @@ const code = String(number).padStart(3, '0');
 				</span>
 			</div>
 			<div class="thumb">
-				<img src={src} alt={`Papercraft Nº ${number}`} loading={index < 8 ? 'eager' : 'lazy'} decoding="async" width="600" height="720" />
+				<img src={src} alt={label} loading={index < 8 ? 'eager' : 'lazy'} decoding="async" width="600" height="720" />
 				<span class="badge">Nº {number}</span>
 			</div>
 		</div>
 	</button>
 
 	<div class="info">
-		<span class="avatar" aria-hidden="true">{CHANNEL.avatarEmoji}</span>
 		<div class="text">
-			<h3 class="title">Papercraft Nº {number}</h3>
+			<h3 class="title">{title}</h3>
 			<p class="meta">{CHANNEL.name} <span class="check" title="Hecho a mano">✦</span></p>
 			<p class="meta">Anime papercraft · #{code}</p>
 		</div>
@@ -163,17 +166,8 @@ const code = String(number).padStart(3, '0');
 		padding: 0 4px;
 	}
 
-	.avatar {
-		flex-shrink: 0;
-		display: grid;
-		place-items: center;
-		width: 36px;
-		height: 36px;
-		font-size: 1.1rem;
-		border-radius: 50%;
-		background: linear-gradient(135deg, var(--pink-200), var(--lilac-300));
-		border: 2px solid #fff;
-		box-shadow: 0 2px 8px rgba(125, 95, 203, 0.3);
+	.check {
+		color: var(--pink-400);
 	}
 
 	.text {
@@ -195,13 +189,8 @@ const code = String(number).padStart(3, '0');
 		color: var(--ink-soft);
 	}
 
-	.check {
-		color: var(--pink-400);
-	}
-
 	@media (max-width: 520px) {
-		.window-title,
-		.avatar {
+		.window-title {
 			display: none;
 		}
 		.window-bar {

@@ -14,15 +14,19 @@ const files = (await readdir(catalogDir)).filter((f) => IMAGE_EXT.test(f));
 
 const items = [];
 for (const file of files) {
-	const match = file.match(/^\s*(\d+)/);
+	// Formato esperado: "<número>_<nombre>.ext" (tolera espacios sueltos, p. ej. "20_ Uraraka").
+	const base = file.replace(IMAGE_EXT, '');
+	const match = base.match(/^\s*(\d+)\s*_?\s*(.*)$/);
 	if (!match) {
 		console.warn(`[catalog] Ignorado (no empieza por número): ${file}`);
 		continue;
 	}
 	items.push({
 		number: Number(match[1]),
+		name: match[2].replace(/\s+/g, ' ').trim(),
 		file,
-		src: `/catalog/${encodeURIComponent(file)}`,
+		// relativo: el componente le antepone el `base` de Astro
+		src: `catalog/${encodeURIComponent(file)}`,
 	});
 }
 
