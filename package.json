@@ -13,12 +13,16 @@
     "prebuild": "npm run catalog",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "ensure-nojekyll": "node scripts/ensure-nojekyll.mjs",
+    "gh-pages:deploy": "gh-pages -d dist -t",
+    "deploy": "npm run ensure-nojekyll && npm run build && npm run gh-pages:deploy"
   },
   "dependencies": {
     "astro": "^7.4.2"
   },
   "devDependencies": {
+    "gh-pages": "^6.3.0",
     "sharp": "^0.35.5"
   }
 }
